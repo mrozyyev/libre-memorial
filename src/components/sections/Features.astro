@@ -1,0 +1,55 @@
+---
+import FeatureCard from "../FeatureCard.astro";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+
+
+const featureData = [
+    {
+        icon: "icon1",
+        headline: "Free and Open-Source",
+        description: "Honoring your loved one shouldn’t be expensive. Create memorial pages and QR codes at no cost, making remembrance accessible for everyone."
+    },
+    {
+        icon: "icon2",
+        headline: "Unique Memorial Pages",
+        description: "Customize every detail. Easily add photos, biographies, memories, and quotes to create a meaningful tribute."
+    },
+    {
+        icon: "icon3",
+        headline: "Raise Awareness and Donations",
+        description: "Make a difference in their name. Add donation links to support medical conditions or causes that matter to your loved one."
+    },
+    {
+        icon: "icon4",
+        headline: "Localized QR Code Printing",
+        description: "Find services near you. We help you locate affordable QR code printing options based on your location."
+    },
+    {
+        icon: "icon5",
+        headline: "User-Driven Development",
+        description: "Evolving with your needs. Our open-source platform continuously improves based on user feedback, ensuring the best experience."
+    },
+    {
+        icon: "icon6",
+        headline: "Your memories, your choice.",
+        description: "We prioritize your privacy, allowing you to control who can see and access the memorial pages you create."
+    }
+
+];
+---
+
+<section class="p-10 flex flex-col align-middle items-center justify-center space-y-2">
+    <div class="badge badge-primary badge-outline">features</div>
+    <h1 class="text-2xl md:text-5xl">Honoring Memories Together</h1>
+    <div class=" grid grid-cols-3">
+
+        {featureData.map((feature, index) => (
+            <FeatureCard
+                key={index}
+                title={feature.headline}
+                subtitle={feature.description}
+            />
+        ))}
+    </div>
+</setion>

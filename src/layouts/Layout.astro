@@ -4,14 +4,16 @@ interface Props {
 }
 
 const { title } = Astro.props;
+import Footer from '@/components/Footer.astro';
+import Navbar from '@/components/navbar/Navbar.astro';
 import '@fontsource-variable/space-grotesk';
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Astro x Shadcn Starter Template" />
+		<meta name="description" content="LibreMemorial - Free & Open source memorial page" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
@@ -19,16 +21,19 @@ import '@fontsource-variable/space-grotesk';
 
 		<!-- OpenGraph meta tags -->
 		<meta property="og:title" content={title} />
-		<meta property="og:description" content="Astro x Shadcn Starter Template" />
+		<meta property="og:description" content="LibreMemorial - Free & Open source memorial page" />
 		<meta property="og:image" content="/opengraph.png?v=1" />
-		<meta property="og:url" content="https://astroshadcnstarter.netlify.app" />
+		<meta property="og:url" content="https://librememorial.org" />
 		<meta property="og:type" content="website" />
 	</head>
+	<Navbar  class:list={''}/>
 	<body>
 		<slot />
+		<!-- <Footer /> -->
 	</body>
+
 </html>
-<style is:global>
+<!-- <style is:global>
 	:root {
 		--accent: 136, 58, 234;
 		--accent-light: 224, 204, 250;
@@ -42,7 +47,6 @@ import '@fontsource-variable/space-grotesk';
 	}
 	html {
 		font-family: system-ui, sans-serif;
-		background: #13151a;
 		background-size: 224px;
 	}
 	code {
@@ -56,4 +60,4 @@ import '@fontsource-variable/space-grotesk';
 			Courier New,
 			monospace;
 	}
-</style>
+</style> -->
