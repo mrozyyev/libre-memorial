@@ -3,7 +3,7 @@
   "name": "Delete Me Test",
   "born": "1900",
   "died": "1901",
-  "epitaph": "Temporary record for verifying the write API.",
+  "epitaph": "Verified against the real GitHub API.",
   "cover": "muomqit4-ae0d1ec96d07.png",
   "photos": [
     {
@@ -12,12 +12,17 @@
       "createdAt": "2026-09-30T21:40:58.526Z"
     }
   ],
-  "donations": [],
+  "donations": [
+    {
+      "label": "Test charity",
+      "url": "https://example.org/give"
+    }
+  ],
   "links": [],
   "media": [],
   "visibility": "unlisted",
   "createdAt": "2026-09-30T21:40:35.710Z",
-  "updatedAt": "2026-09-30T21:40:58.836Z",
+  "updatedAt": "2026-09-30T21:43:33.977Z",
   "auth": {
     "salt": "8f81733a4594608a6cb83de2efb58a2d",
     "keyHash": "5e4a5f5de898f6e7f0cbf8668aac5fc5373724988b975d00ffa66709518587c3"
