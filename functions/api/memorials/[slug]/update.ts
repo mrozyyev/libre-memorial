@@ -5,7 +5,7 @@ import { clientIp, handleError, json, rateLimit, readJsonBody } from "../../../l
 import { requireEditKey } from "../../../lib/auth";
 import { triggerPublish } from "../../../lib/publish";
 import { validateMemorialPatch } from "../../../../shared/validate";
-import { applyMemorialPatch, memorialPath } from "../../../../shared/memorial";
+import { applyMemorialPatch, memorialPath, normalizeMemorial } from "../../../../shared/memorial";
 import { toPublicMemorial } from "../../../../shared/types";
 
 /**
@@ -22,12 +22,14 @@ export const onRequestPost: PagesHandler = async (context) => {
     const github = new GithubClient(config);
     const memorial = await requireEditKey(request, github, slug);
     const patch = validateMemorialPatch(await readJsonBody(request));
-    const next = applyMemorialPatch(memorial, patch);
 
-    await github.putFile(
+    // Read-modify-write rather than a blind PUT: GitHub refuses an overwrite
+    // that does not carry the current file sha, and this also retries when
+    // somebody else committed between our read and our write.
+    const next = await github.updateJson(
       memorialPath(slug),
-      `${JSON.stringify(next, null, 2)}\n`,
-      `Update memorial details for ${next.name}`,
+      (current) => applyMemorialPatch(normalizeMemorial(current), patch),
+      `Update memorial details for ${patch.name ?? memorial.name}`,
     );
     triggerPublish(config, context);
 

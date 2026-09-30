@@ -104,6 +104,16 @@ export class FakeGithub {
         sha?: string;
       };
       const existing = this.files.get(path);
+      if (existing && !body.sha) {
+        // GitHub refuses to overwrite a file unless you prove you read it.
+        return new Response(
+          JSON.stringify({
+            message: 'Invalid request.\n\n"sha" wasn\'t supplied.',
+            status: "422",
+          }),
+          { status: 422 },
+        );
+      }
       if (body.sha && existing && body.sha !== existing.sha) {
         return new Response(JSON.stringify({ message: "Conflict" }), { status: 409 });
       }
