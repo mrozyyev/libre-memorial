@@ -47,7 +47,7 @@ export const onRequestPost: PagesHandler = async (context) => {
     await github.putBytes(
       photoPath(slug, file),
       image.bytes,
-      `Add photo to ${memorial.name}`,
+      `Add a photo to ${memorial.name}`,
     );
 
     const meta: PhotoMeta = { file, caption, createdAt: new Date().toISOString() };
@@ -63,7 +63,7 @@ export const onRequestPost: PagesHandler = async (context) => {
         fresh.updatedAt = new Date().toISOString();
         return fresh;
       },
-      `Add photo to ${memorial.name}`,
+      `Record the new photo on ${memorial.name}`,
     );
 
     triggerPublish(config, context);
@@ -93,7 +93,7 @@ export const onRequestDelete: PagesHandler = async (context) => {
     if (!file) throw new HttpError(400, "Which photo should be removed?");
 
     const entry = await findPhotoEntry(github, slug, file);
-    await github.deleteFile(entry.path, entry.sha, `Remove photo from ${memorial.name}`);
+    await github.deleteFile(entry.path, entry.sha, `Remove a photo from ${memorial.name}`);
     await github.updateJson(
       memorialPath(slug),
       (current) => {
@@ -103,7 +103,7 @@ export const onRequestDelete: PagesHandler = async (context) => {
         fresh.updatedAt = new Date().toISOString();
         return fresh;
       },
-      `Remove photo from ${memorial.name}`,
+      `Forget the removed photo on ${memorial.name}`,
     );
     triggerPublish(config, context);
 
