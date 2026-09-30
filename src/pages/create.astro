@@ -1,0 +1,36 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import CreateForm from "@/components/manage/CreateForm.tsx";
+import { Clock, ShieldCheck, QrCode, Images } from "@lucide/astro";
+---
+
+<Layout
+  title="Create a memorial"
+  description="Create a free memorial page in a couple of minutes — no account, no payment. Add photos, stories and a printable QR code."
+  noindex
+>
+  <section class="border-b border-sand-200 bg-sand-50">
+    <div class="container-page py-14">
+      <p class="text-sm font-semibold uppercase tracking-wide text-brand-600">Create a memorial</p>
+      <h1 class="mt-3 max-w-3xl font-serif text-4xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl">
+        Start with their name. Everything else can wait.
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
+        There is no account to create and nothing to pay. You will get a secret edit link, a public
+        page, and a QR code you can print.
+      </p>
+      <ul class="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-ink-muted">
+        <li class="inline-flex items-center gap-2"><Clock class="h-4 w-4 text-brand-500" /> Takes a couple of minutes</li>
+        <li class="inline-flex items-center gap-2"><ShieldCheck class="h-4 w-4 text-brand-500" /> No email address required</li>
+        <li class="inline-flex items-center gap-2"><Images class="h-4 w-4 text-brand-500" /> Photos optimised for you</li>
+        <li class="inline-flex items-center gap-2"><QrCode class="h-4 w-4 text-brand-500" /> Printable QR card</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="container-page py-14">
+    <div class="mx-auto max-w-3xl">
+      <CreateForm client:only="react" />
+    </div>
+  </section>
+</Layout>

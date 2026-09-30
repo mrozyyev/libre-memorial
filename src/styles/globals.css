@@ -1,73 +1,147 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-/* 
+@import "tailwindcss";
+
+/*
+  LibreMemorial design tokens.
+  A calm, respectful, paper-white palette — no dark mode, no themes.
+  Evergreen accent for actions, warm sand for surfaces.
+*/
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-serif: "Fraunces Variable", ui-serif, Georgia, "Times New Roman",
+    serif;
+
+  --color-brand-50: #f2f7f4;
+  --color-brand-100: #e3ede8;
+  --color-brand-200: #c6dbd1;
+  --color-brand-300: #9dc2b4;
+  --color-brand-400: #6fa392;
+  --color-brand-500: #4d8776;
+  --color-brand-600: #3a6b5d;
+  --color-brand-700: #30564c;
+  --color-brand-800: #29453e;
+  --color-brand-900: #213a34;
+
+  --color-ink: #1b1b19;
+  --color-ink-soft: #4b4b47;
+  --color-ink-muted: #6f6f69;
+
+  --color-paper: #ffffff;
+  --color-sand-50: #fbfaf8;
+  --color-sand-100: #f5f2ec;
+  --color-sand-200: #ece7dd;
+
+  --radius-card: 1rem;
+}
+
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
-}
-
-body, p, h1, h2, h3, h4, h5, h6 {
-  font-family: 'Space Grotesk Variable', sans-serif;
-}
-
-/* @layer base {
-  * {
-    @apply border-border;
-  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-paper text-ink font-sans antialiased;
   }
-} */ 
+
+  /* Keep anchor targets clear of the sticky header. */
+  [id] {
+    scroll-margin-top: 5rem;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-serif text-balance;
+  }
+
+  ::selection {
+    background: var(--color-brand-200);
+    color: var(--color-brand-900);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 72rem;
+  padding-inline: 1.25rem;
+}
+
+@utility card-surface {
+  @apply rounded-2xl border border-sand-200 bg-white shadow-[0_1px_2px_rgba(27,27,25,0.04)];
+}
+
+/* Subtle paper texture used behind hero/cover areas. */
+@utility paper-texture {
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(27, 27, 25, 0.045) 1px, transparent 0);
+  background-size: 22px 22px;
+}
+
+.prose-memorial {
+  @apply text-lg leading-relaxed text-ink-soft;
+}
+.prose-memorial p {
+  @apply my-5 whitespace-pre-line;
+}
+.prose-memorial h2 {
+  @apply mt-10 mb-4 text-2xl font-semibold text-ink;
+}
+.prose-memorial h3 {
+  @apply mt-8 mb-3 text-xl font-semibold text-ink;
+}
+.prose-memorial ul {
+  @apply my-5 list-disc pl-6;
+}
+.prose-memorial ol {
+  @apply my-5 list-decimal pl-6;
+}
+.prose-memorial blockquote {
+  @apply my-6 border-l-2 border-brand-300 pl-5 font-serif text-xl italic text-ink;
+}
+.prose-memorial a {
+  @apply text-brand-700 underline underline-offset-2;
+}
+
+/* Printing a memorial card: only the card is sent to the printer. */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-card,
+  .print-card * {
+    visibility: visible;
+  }
+  .print-card {
+    position: absolute;
+    left: 50%;
+    top: 40px;
+    transform: translateX(-50%);
+    box-shadow: none;
+    border-color: #ece7dd;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+

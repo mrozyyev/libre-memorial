@@ -1,0 +1,68 @@
+---
+import { Image } from "astro:assets";
+import type { MemorialEntry } from "@/lib/memorials";
+import { lifespan, pluralize } from "@/lib/format";
+import { Images, BookOpen, MapPin } from "@lucide/astro";
+
+interface Props {
+  entry: MemorialEntry;
+  eager?: boolean;
+}
+
+const { entry, eager = false } = Astro.props;
+const { memorial, cover, photos, stories } = entry;
+const dates = lifespan(memorial.born, memorial.died);
+---
+
+<a
+  href={`/m/${memorial.slug}`}
+  class="card-surface group flex flex-col overflow-hidden transition-shadow hover:shadow-md"
+>
+  <div class="relative aspect-[4/3] overflow-hidden bg-sand-100">
+    {
+      cover ? (
+        <Image
+          src={cover}
+          alt={`Portrait of ${memorial.name}`}
+          widths={[400, 800]}
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          loading={eager ? "eager" : "lazy"}
+          class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        />
+      ) : (
+        <div class="paper-texture flex h-full w-full items-center justify-center text-brand-300">
+          <Images class="h-10 w-10" />
+        </div>
+      )
+    }
+  </div>
+
+  <div class="flex flex-1 flex-col p-5">
+    <h3 class="font-serif text-xl font-semibold text-ink">{memorial.name}</h3>
+    {dates && <p class="mt-1 text-sm text-ink-muted">{dates}</p>}
+    {
+      memorial.epitaph && (
+        <p class="mt-3 line-clamp-2 text-sm italic leading-relaxed text-ink-soft">
+          “{memorial.epitaph}”
+        </p>
+      )
+    }
+    <div class="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-5 text-xs text-ink-muted">
+      {photos.length > 0 && (
+        <span class="inline-flex items-center gap-1.5">
+          <Images class="h-3.5 w-3.5" /> {pluralize(photos.length, "photo")}
+        </span>
+      )}
+      {stories.length > 0 && (
+        <span class="inline-flex items-center gap-1.5">
+          <BookOpen class="h-3.5 w-3.5" /> {pluralize(stories.length, "story", "stories")}
+        </span>
+      )}
+      {memorial.location && (
+        <span class="inline-flex items-center gap-1.5">
+          <MapPin class="h-3.5 w-3.5" /> {memorial.location}
+        </span>
+      )}
+    </div>
+  </div>
+</a>

@@ -1,0 +1,23 @@
+{
+  "slug": "andrei-ionescu",
+  "name": "Andrei Ionescu",
+  "born": "1961",
+  "died": "2024-11-03",
+  "epitaph": "He knew the name of every bird in the valley.",
+  "biography": "Andrei was a forester, a birdwatcher and a terrible cook. He walked the same ridge above the valley for almost forty years and kept a list of every species he saw there; by the end it ran to one hundred and sixty-two.\n\nHe was not a man of many words but he wrote postcards. Hundreds. From every town he ever passed through, to his wife, his daughters and eventually his grandchildren, always four lines long and always ending the same way: \"Everything is in order here.\"\n\nThis page is a small example of what a memorial can look like — it is not a real person. Feel free to make it your own, or delete it.",
+  "location": "Valea Ierii, Romania",
+  "cover": "portrait.jpg",
+  "photos": [
+    { "file": "1.jpg", "caption": "The ridge, November" },
+    { "file": "2.jpg", "caption": "His last notebook, still half empty" }
+  ],
+  "donations": [],
+  "links": [],
+  "visibility": "public",
+  "createdAt": "2026-02-04T11:02:00.000Z",
+  "updatedAt": "2026-02-04T11:02:00.000Z",
+  "auth": {
+    "salt": "b8e2f5c1d9a74063e2f18b4c7a0d3591",
+    "keyHash": "1a5c8e2b6f0d3947a2c5e8b1d4f7096a3c6e9b2d5f80147a3c6e9b2d5f80147a"
+  }
+}

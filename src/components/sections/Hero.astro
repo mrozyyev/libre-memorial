@@ -1,21 +1,127 @@
-<section>
-    <div class="hero bg-base-200 min-h-90vh">
-        <div
-            class="hero-content flex-col lg:grid lg:grid-cols-2 lg:grid-flow-row lg:justify-items-end"
-        >
-            <div>
-                <h1 class="text-2xl md:text-5xl font-bold">
-                    Honor your Loved ones Memory, Without the Hefty Price Tag
-                </h1>
-                <p class="py-6">
-                    Create a beautiful, lasting memorial page with a
-                    personalized QR code. Simple, affordable, and accessible to
-                    all.
-                </p>
-                <button class="btn btn-primary">Get Started for free</button>
-                <button class="btn btn-outline">See Memorials</button>
-            </div>
-            <img src="/hero.jpg" class="max-full rounded-lg shadow-2xl" />
-        </div>
+---
+import { Image } from "astro:assets";
+import QRCode from "qrcode";
+import type { MemorialEntry } from "@/lib/memorials";
+import { lifespan } from "@/lib/format";
+import Button from "@/components/Button.astro";
+import { Sparkles, QrCode, ShieldCheck, EyeOff, ArrowRight } from "@lucide/astro";
+
+interface Props {
+  featured?: MemorialEntry;
+  baseUrl: string;
+}
+
+const { featured, baseUrl } = Astro.props;
+const target = featured ? `${baseUrl}/m/${featured.memorial.slug}` : `${baseUrl}/create`;
+const qrSvg = await QRCode.toString(target, {
+  type: "svg",
+  margin: 0,
+  errorCorrectionLevel: "M",
+  color: { dark: "#213a34", light: "#0000" },
+});
+
+const memorial = featured?.memorial;
+const dates = memorial ? lifespan(memorial.born, memorial.died) : "";
+const tiles = featured?.photos.slice(0, 3) ?? [];
+---
+
+<section class="relative overflow-hidden border-b border-sand-200">
+  <div class="paper-texture absolute inset-0 -z-10 opacity-70"></div>
+  <div class="container-page grid items-center gap-14 py-16 lg:grid-cols-[1.05fr_1fr] lg:py-24">
+    <div>
+      <p
+        class="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-brand-700"
+      >
+        <Sparkles class="h-3.5 w-3.5" /> Free · Open source · No accounts
+      </p>
+      <h1
+        class="mt-6 font-serif text-4xl font-semibold leading-[1.08] tracking-tight text-ink sm:text-5xl lg:text-6xl"
+      >
+        Keep their memory somewhere that lasts.
+      </h1>
+      <p class="mt-6 max-w-xl text-lg leading-relaxed text-ink-soft">
+        Build a memorial page with photos, the life story, and the memories people want to
+        share. Print the QR code on a card, a bench, or a headstone — anyone who scans it lands
+        here, for as long as the web exists.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-3">
+        <Button href="/create" size="lg">
+          Create a memorial <ArrowRight class="h-4 w-4" />
+        </Button>
+        <Button href="/how-it-works" variant="outline" size="lg">See how it works</Button>
+      </div>
+
+      <ul class="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-sm text-ink-muted">
+        <li class="inline-flex items-center gap-2"><ShieldCheck class="h-4 w-4 text-brand-500" /> No ads, ever</li>
+        <li class="inline-flex items-center gap-2"><EyeOff class="h-4 w-4 text-brand-500" /> No tracking scripts</li>
+        <li class="inline-flex items-center gap-2"><QrCode class="h-4 w-4 text-brand-500" /> QR card ready to print</li>
+      </ul>
     </div>
+
+    <div class="relative mx-auto w-full max-w-md">
+      <div class="card-surface overflow-hidden">
+        <div class="relative aspect-[16/10] bg-sand-100">
+          {
+            featured?.cover ? (
+              <Image
+                src={featured.cover}
+                alt={memorial ? `Portrait of ${memorial.name}` : "Memorial portrait"}
+                widths={[480, 960]}
+                sizes="(min-width: 1024px) 40vw, 90vw"
+                loading="eager"
+                class="h-full w-full object-cover"
+              />
+            ) : (
+              <div
+                class="paper-texture flex h-full w-full items-center justify-center bg-brand-50 text-brand-400"
+              >
+                <span class="font-serif text-lg">In loving memory</span>
+              </div>
+            )
+          }
+        </div>
+
+        <div class="flex items-start gap-4 p-5">
+          <div class="min-w-0 flex-1">
+            <h2 class="truncate font-serif text-2xl font-semibold text-ink">
+              {memorial?.name ?? "Maria Popescu"}
+            </h2>
+            <p class="mt-1 text-sm text-ink-muted">{dates || "1943 — 2025"}</p>
+            <p class="mt-3 line-clamp-2 text-sm italic text-ink-soft">
+              “{memorial?.epitaph ?? "She planted trees she would never sit under."}”
+            </p>
+          </div>
+          <div class="shrink-0 rounded-xl border border-sand-200 bg-white p-2">
+            <div class="h-20 w-20 [&>svg]:h-full [&>svg]:w-full" set:html={qrSvg} />
+          </div>
+        </div>
+
+        {
+          tiles.length > 0 && (
+            <div class="grid grid-cols-3 gap-1.5 px-5 pb-5">
+              {tiles.map(
+                (tile) =>
+                  tile.image && (
+                    <Image
+                      src={tile.image}
+                      alt={tile.caption || "Memorial photo"}
+                      widths={[200, 400]}
+                      sizes="120px"
+                      class="aspect-square w-full rounded-lg object-cover"
+                    />
+                  ),
+              )}
+            </div>
+          )
+        }
+      </div>
+
+      <div
+        class="absolute -bottom-4 left-4 inline-flex items-center gap-2 rounded-full border border-sand-200 bg-paper px-3.5 py-2 text-xs font-semibold text-ink-soft shadow-sm"
+      >
+        <QrCode class="h-4 w-4 text-brand-600" /> Scan to visit the memorial
+      </div>
+    </div>
+  </div>
 </section>

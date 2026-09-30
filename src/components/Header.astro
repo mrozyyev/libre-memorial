@@ -1,0 +1,87 @@
+---
+import { SITE, NAV } from "@/lib/site";
+import Logo from "./Logo.astro";
+import { Menu, X } from "@lucide/astro";
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header class="sticky top-0 z-40 border-b border-sand-200/80 bg-paper/85 backdrop-blur">
+  <div class="container-page flex h-16 items-center justify-between gap-4">
+    <a href="/" class="flex items-center gap-2 text-brand-700" aria-label={`${SITE.name} home`}>
+      <Logo class="h-7 w-7" />
+      <span class="font-serif text-lg font-semibold tracking-tight text-ink">
+        Libre<span class="text-brand-600">Memorial</span>
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-1 md:flex" aria-label="Main">
+      {
+        NAV.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? "page" : undefined}
+            class:list={[
+              "rounded-full px-3.5 py-2 text-sm font-medium transition-colors",
+              isActive(item.href)
+                ? "bg-brand-50 text-brand-800"
+                : "text-ink-soft hover:bg-sand-100 hover:text-ink",
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a
+        href="/create"
+        class="ml-2 rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-700"
+      >
+        Create a memorial
+      </a>
+    </nav>
+
+    <details class="relative md:hidden" data-mobile-menu>
+      <summary
+        class="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-full text-ink-soft hover:bg-sand-100 [&::-webkit-details-marker]:hidden"
+        aria-label="Open menu"
+      >
+        <Menu class="h-5 w-5" data-menu-open />
+        <X class="hidden h-5 w-5" data-menu-close />
+      </summary>
+      <div
+        class="absolute right-0 mt-2 w-64 rounded-2xl border border-sand-200 bg-paper p-2 shadow-lg"
+      >
+        {
+          NAV.map((item) => (
+            <a
+              href={item.href}
+              class="block rounded-xl px-3 py-2.5 text-sm font-medium text-ink-soft hover:bg-sand-100 hover:text-ink"
+            >
+              {item.label}
+            </a>
+          ))
+        }
+        <a
+          href="/create"
+          class="mt-1 block rounded-xl bg-brand-600 px-3 py-2.5 text-center text-sm font-semibold text-white hover:bg-brand-700"
+        >
+          Create a memorial
+        </a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<script>
+  const menus = document.querySelectorAll<HTMLDetailsElement>("details[data-mobile-menu]");
+  for (const menu of menus) {
+    menu.addEventListener("toggle", () => {
+      menu.querySelector("[data-menu-open]")?.classList.toggle("hidden", menu.open);
+      menu.querySelector("[data-menu-close]")?.classList.toggle("hidden", !menu.open);
+    });
+    document.addEventListener("click", (event) => {
+      if (menu.open && !menu.contains(event.target as Node)) menu.open = false;
+    });
+  }
+</script>

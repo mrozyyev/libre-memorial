@@ -13,18 +13,22 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# environment variables
+# environment variables (never commit secrets)
 .env
-.env.production
+.env.*
+!.env.example
+.dev.vars
 
 # macOS-specific files
 .DS_Store
 
-# jetbrains setting folder
+# jetbrains / editors
 .idea/
-
-# lock files
-package-lock.json
-
-# vscode settings
 .vscode/
+
+# wrangler
+.wrangler/
+
+# generated social preview images (see scripts/generate-og.mjs)
+public/og/
+public/og-default.png

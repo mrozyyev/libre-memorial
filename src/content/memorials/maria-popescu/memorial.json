@@ -1,0 +1,44 @@
+{
+  "slug": "maria-popescu",
+  "name": "Maria Popescu",
+  "born": "1943-05-02",
+  "died": "2025-01-17",
+  "epitaph": "She planted trees she would never sit under.",
+  "biography": "Maria was born in a small village outside Cluj, the eldest of five, in a house with one stove and a great many opinions. She trained as a biology teacher and spent thirty-one years in the same school, teaching three generations of the same families.\n\nShe kept a garden that fed half the street and a notebook where she wrote down every plant she ever grew, in blue ink, in handwriting that got smaller as the years went on. When she could no longer kneel in the beds, she sat on a chair at the edge of them and directed.\n\nAfter retirement she learned to swim at sixty-four, took up the accordion again at seventy, and became the person her grandchildren called when something in life needed to be made sense of.\n\nShe was diagnosed in the autumn of 2024 and died at home, in her own bed, with the window open, on the 17th of January. She asked that there be no speeches — and then gave us all a page of notes about what to say.",
+  "location": "Cluj-Napoca, Romania",
+  "quote": "We are only ever looking after things for a while.",
+  "quoteAuthor": "Something she said often",
+  "cover": "portrait.jpg",
+  "photos": [
+    {
+      "file": "1.jpg",
+      "caption": "The garden, the summer she turned eighty"
+    },
+    {
+      "file": "2.jpg",
+      "caption": "At the lake in Crișul Repede, 1978"
+    },
+    {
+      "file": "3.jpg",
+      "caption": "Her teaching notebook, blue ink"
+    },
+    {
+      "file": "4.jpg",
+      "caption": "Last walk through the orchard"
+    }
+  ],
+  "donations": [
+    {
+      "label": "Hospice Casa Speranței",
+      "url": "https://hospice.ro/"
+    }
+  ],
+  "links": [],
+  "visibility": "public",
+  "createdAt": "2026-01-18T09:12:00.000Z",
+  "updatedAt": "2026-02-02T18:40:00.000Z",
+  "auth": {
+    "salt": "3f7c1a5e9b2d8460a1c93de7f5082b64",
+    "keyHash": "9c4d1fb7a0e2538d6a7f4b9c1e8d2a5f7b3c6e9048d1a2f5c8e7b0d3a6f9c2e1"
+  }
+}

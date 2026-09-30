@@ -1,0 +1,82 @@
+---
+import {
+  QrCode,
+  Images,
+  BookOpen,
+  Heart,
+  Printer,
+  ShieldCheck,
+  Palette,
+} from "@lucide/astro";
+import GithubMark from "@/components/icons/GithubMark.astro";
+
+const features = [
+  {
+    icon: Images,
+    title: "Photos that stay sharp",
+    body: "Upload from your phone; every image is downscaled and optimised at build time, so the page loads fast and the project never balloons in size.",
+  },
+  {
+    icon: BookOpen,
+    title: "Stories from everyone",
+    body: "Collect memories from family and friends. Each one is a small file of its own, so nothing gets overwritten and nothing gets lost.",
+  },
+  {
+    icon: QrCode,
+    title: "A printable QR code",
+    body: "Every memorial gets a QR code and a print-ready card. Put it on an order of service, a photo frame, a bench or a headstone.",
+  },
+  {
+    icon: Heart,
+    title: "Donation links, if you want",
+    body: "Add a GoFundMe, a charity or a cause close to them. We never take a cut and we never handle your money.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "No accounts, no tracking",
+    body: "A single secret edit link is all it takes to manage a page. No signups, no cookies, no analytics, no advertising.",
+  },
+  {
+    icon: GithubMark,
+    title: "Your files, in Git",
+    body: "Every memorial is stored as plain JSON, photos and stories in a Git repository. You can export it, back it up or move it anywhere.",
+  },
+  {
+    icon: Printer,
+    title: "Unlisted when you need it",
+    body: "Keep a page reachable only by link — perfect for a private family gathering — and make it public whenever you are ready.",
+  },
+  {
+    icon: Palette,
+    title: "Calm by default",
+    body: "One respectful, paper-white design that puts the person first. No themes to fiddle with, nothing to distract from their memory.",
+  },
+];
+---
+
+<section class="container-page py-20" id="features">
+  <div class="max-w-2xl">
+    <p class="text-sm font-semibold uppercase tracking-wide text-brand-600">Why it is different</p>
+    <h2 class="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+      Honest software for remembering someone
+    </h2>
+    <p class="mt-4 text-lg leading-relaxed text-ink-soft">
+      Memorial services should not be a subscription. This one is a few small files and a
+      static site — cheap to run, hard to take away, and yours to keep.
+    </p>
+  </div>
+
+  <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      features.map((feature) => (
+        <div class="rounded-2xl border border-sand-200 bg-paper p-6">
+          <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+            <feature.icon class="h-5 w-5" />
+          </span>
+          <h3 class="mt-4 text-base font-semibold text-ink">{feature.title}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-ink-muted">{feature.body}</p>
+        </div>
+      ))
+    }
+  </div>
+</section>

@@ -1,0 +1,408 @@
+---
+import { getImage } from "astro:assets";
+import { Image } from "astro:assets";
+import Layout from "@/layouts/Layout.astro";
+import QrPanel from "@/components/islands/QrPanel.tsx";
+import Lightbox from "@/components/islands/Lightbox.tsx";
+import { getMemorial, getMemorialSlugs } from "@/lib/memorials";
+import { lifespan, formatTimestamp, pluralize } from "@/lib/format";
+import { embedUrl, providerLabel } from "@shared/video";
+import { SITE } from "@/lib/site";
+import {
+  ArrowLeft,
+  BookOpen,
+  Heart,
+  Images,
+  MapPin,
+  Music,
+  Pencil,
+  Play,
+  Quote,
+  ExternalLink,
+  Lock,
+} from "@lucide/astro";
+
+export function getStaticPaths() {
+  return getMemorialSlugs().map((slug) => ({ params: { slug } }));
+}
+
+const { slug = "" } = Astro.params;
+const entry = getMemorial(slug);
+
+if (!entry) {
+  return Astro.redirect("/explore");
+}
+
+const { memorial, photos, stories, cover } = entry;
+const dates = lifespan(memorial.born, memorial.died);
+const url = new URL(`/m/${memorial.slug}`, SITE.url).href;
+const description =
+  memorial.epitaph ||
+  (memorial.biography ? `${memorial.biography.slice(0, 155)}…` : `A memorial page for ${memorial.name}.`);
+
+const gallery = await Promise.all(
+  photos.map(async (photo, index) => ({
+    ...photo,
+    index,
+    full: photo.image ? (await getImage({ src: photo.image, width: 1600 })).src : "",
+  })),
+);
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: memorial.name,
+  ...(memorial.born && { birthDate: memorial.born }),
+  ...(memorial.died && { deathDate: memorial.died }),
+  ...(memorial.location && { homeLocation: { "@type": "Place", name: memorial.location } }),
+  ...(cover && { image: new URL(cover.src, SITE.url).href }),
+  description,
+  url,
+};
+---
+
+<Layout
+  title={`In memory of ${memorial.name}`}
+  description={description}
+  image={`/og/${memorial.slug}.png`}
+  type="profile"
+  noindex={memorial.visibility === "unlisted"}
+>
+  <section class="border-b border-sand-200 bg-sand-50">
+    <div class="container-page py-10">
+      <a
+        href="/explore"
+        class="no-print inline-flex items-center gap-1.5 text-sm font-medium text-ink-muted hover:text-ink"
+      >
+        <ArrowLeft class="h-4 w-4" /> All memorials
+      </a>
+
+      <div class="mt-8 grid gap-10 md:grid-cols-[minmax(0,300px)_1fr] md:items-start">
+        <div class="mx-auto w-full max-w-[300px] md:mx-0">
+          {
+            cover ? (
+              <Image
+                src={cover}
+                alt={`Portrait of ${memorial.name}`}
+                widths={[300, 600]}
+                sizes="(min-width: 768px) 300px, 80vw"
+                loading="eager"
+                class="aspect-[4/5] w-full rounded-3xl object-cover shadow-sm"
+              />
+            ) : (
+              <div class="paper-texture flex aspect-[4/5] w-full items-center justify-center rounded-3xl bg-sand-100 text-brand-300">
+                <Images class="h-10 w-10" />
+              </div>
+            )
+          }
+        </div>
+
+        <div>
+          {
+            memorial.visibility === "unlisted" && (
+              <p class="mb-4 inline-flex items-center gap-2 rounded-full border border-sand-200 bg-paper px-3 py-1 text-xs font-medium text-ink-muted">
+                <Lock class="h-3.5 w-3.5" /> Unlisted — only people with the link can find this page
+              </p>
+            )
+          }
+          <h1 class="font-serif text-4xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl">
+            {memorial.name}
+          </h1>
+          {dates && <p class="mt-3 text-lg text-ink-muted">{dates}</p>}
+          {
+            memorial.location && (
+              <p class="mt-2 inline-flex items-center gap-1.5 text-sm text-ink-muted">
+                <MapPin class="h-4 w-4" /> {memorial.location}
+              </p>
+            )
+          }
+          {
+            memorial.epitaph && (
+              <p class="mt-6 border-l-2 border-brand-300 pl-5 font-serif text-xl italic leading-relaxed text-ink-soft">
+                {memorial.epitaph}
+              </p>
+            )
+          }
+
+          <div class="no-print mt-8 flex flex-wrap gap-2">
+            <a
+              href={`#share`}
+              class="inline-flex items-center gap-2 rounded-full bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
+            >
+              <Heart class="h-4 w-4" /> QR code &amp; sharing
+            </a>
+            <a
+              href={`/manage#${memorial.slug}`}
+              class="inline-flex items-center gap-2 rounded-full border border-sand-200 bg-paper px-4 py-2.5 text-sm font-semibold text-ink transition-colors hover:border-brand-300 hover:bg-brand-50"
+            >
+              <Pencil class="h-4 w-4" /> Add photos or stories
+            </a>
+          </div>
+
+          <dl class="no-print mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm text-ink-muted">
+            {photos.length > 0 && (
+              <div class="inline-flex items-center gap-2">
+                <Images class="h-4 w-4 text-brand-500" />
+                <dt class="sr-only">Photos</dt>
+                <dd>{pluralize(photos.length, "photo")}</dd>
+              </div>
+            )}
+            {stories.length > 0 && (
+              <div class="inline-flex items-center gap-2">
+                <BookOpen class="h-4 w-4 text-brand-500" />
+                <dt class="sr-only">Stories</dt>
+                <dd>{pluralize(stories.length, "story", "stories")}</dd>
+              </div>
+            )}
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {
+    memorial.biography && (
+      <section class="container-page py-14">
+        <div class="mx-auto max-w-3xl">
+          <h2 class="font-serif text-2xl font-semibold text-ink">Their life</h2>
+          <div class="prose-memorial mt-6">
+            {memorial.biography.split("\n\n").map((paragraph) => (
+              <p>{paragraph}</p>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    memorial.quote && (
+      <section class="border-y border-sand-200 bg-sand-50">
+        <div class="container-page py-14">
+          <figure class="mx-auto max-w-3xl text-center">
+            <Quote class="mx-auto h-7 w-7 text-brand-300" />
+            <blockquote class="mt-5 font-serif text-2xl italic leading-relaxed text-ink sm:text-3xl">
+              “{memorial.quote}”
+            </blockquote>
+            {memorial.quoteAuthor && (
+              <figcaption class="mt-4 text-sm text-ink-muted">— {memorial.quoteAuthor}</figcaption>
+            )}
+          </figure>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    gallery.length > 0 && (
+      <section class="container-page py-14" id="photos">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+          <h2 class="font-serif text-2xl font-semibold text-ink">Photographs</h2>
+          <p class="no-print text-sm text-ink-muted">Tap any photo to see it larger</p>
+        </div>
+        <div class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {gallery.map((photo) => (
+            <button
+              type="button"
+              data-lightbox
+              data-full={photo.full}
+              data-caption={photo.caption}
+              class="group relative overflow-hidden rounded-2xl bg-sand-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+              aria-label={photo.caption ? `View: ${photo.caption}` : "View photo"}
+            >
+              <Image
+                src={photo.image!}
+                alt={photo.caption || `Photo of ${memorial.name}`}
+                widths={[300, 600, 900]}
+                sizes="(min-width: 1024px) 22vw, (min-width: 640px) 30vw, 45vw"
+                loading={photo.index < 4 ? "eager" : "lazy"}
+                class="aspect-square w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+              />
+              {photo.caption && (
+                <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/70 to-transparent p-3 text-left text-xs font-medium text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  {photo.caption}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    memorial.media.length > 0 && (
+      <section class="border-y border-sand-200 bg-sand-50" id="media">
+        <div class="container-page py-14">
+          <h2 class="font-serif text-2xl font-semibold text-ink">Videos and music</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-relaxed text-ink-muted">
+            These play straight from YouTube or Vimeo. Nothing is loaded from them until you press
+            play, so simply reading this page tells them nothing.
+          </p>
+          <ul class="mt-8 grid gap-6 md:grid-cols-2">
+            {memorial.media.map((item) => (
+              <li class="card-surface overflow-hidden">
+                <div class="relative aspect-video bg-sand-100">
+                  <button
+                    type="button"
+                    data-embed={embedUrl(item)}
+                    data-embed-title={item.title ?? `Video from ${providerLabel(item.provider)}`}
+                    class="group absolute inset-0 flex flex-col items-center justify-center gap-3 text-ink-soft transition-colors hover:bg-brand-50"
+                    aria-label={`Play ${item.title ?? "video"} — loads from ${providerLabel(item.provider)}`}
+                  >
+                    <span class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-600 text-white shadow-sm transition-transform group-hover:scale-105">
+                      <Play class="h-6 w-6 pl-0.5" />
+                    </span>
+                    <span class="text-xs font-medium text-ink-muted">
+                      Play — loads from {providerLabel(item.provider)}
+                    </span>
+                  </button>
+                </div>
+                <div class="flex items-center gap-2 p-4">
+                  <Music class="h-4 w-4 shrink-0 text-brand-500" />
+                  <p class="text-sm font-medium text-ink">
+                    {item.title ?? `${providerLabel(item.provider)} video`}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    stories.length > 0 && (
+      <section class="border-y border-sand-200 bg-sand-50" id="stories">
+        <div class="container-page py-14">
+          <h2 class="font-serif text-2xl font-semibold text-ink">Memories people shared</h2>
+          <div class="mt-8 grid gap-6 md:grid-cols-2">
+            {stories.map((story) => (
+              <article class="card-surface flex flex-col p-6">
+                {story.title && (
+                  <h3 class="font-serif text-xl font-semibold text-ink">{story.title}</h3>
+                )}
+                <div class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-muted">
+                  <span class="font-medium text-ink-soft">{story.author}</span>
+                  {story.relation && <span>· {story.relation}</span>}
+                  {story.date && <span>· {story.date}</span>}
+                </div>
+                <p class="mt-4 whitespace-pre-line text-[15px] leading-relaxed text-ink-soft">
+                  {story.body}
+                </p>
+                {story.createdAt && (
+                  <p class="mt-4 text-xs text-ink-muted">
+                    Added {formatTimestamp(story.createdAt)}
+                  </p>
+                )}
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    memorial.donations.length > 0 && (
+      <section class="container-page py-14" id="donations">
+        <div class="mx-auto max-w-3xl">
+          <h2 class="font-serif text-2xl font-semibold text-ink">In their name</h2>
+          <p class="mt-3 text-ink-soft">
+            {memorial.name} supported these causes. Donations go directly to them — LibreMemorial
+            takes no cut and processes no payments.
+          </p>
+          <ul class="mt-6 grid gap-3 sm:grid-cols-2">
+            {memorial.donations.map((donation) => (
+              <li>
+                <a
+                  href={donation.url}
+                  class="card-surface flex items-center justify-between gap-4 p-5 transition-colors hover:border-brand-300 hover:bg-brand-50"
+                >
+                  <span>
+                    <span class="block font-semibold text-ink">{donation.label}</span>
+                    <span class="mt-0.5 block text-xs text-ink-muted">
+                      {donation.url.replace(/^https?:\/\//, "").split("/")[0]}
+                    </span>
+                  </span>
+                  <ExternalLink class="h-4 w-4 shrink-0 text-brand-600" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    memorial.links.length > 0 && (
+      <section class="container-page pb-14">
+        <div class="mx-auto max-w-3xl">
+          <h2 class="font-serif text-2xl font-semibold text-ink">Elsewhere</h2>
+          <ul class="mt-6 flex flex-wrap gap-3">
+            {memorial.links.map((link) => (
+              <li>
+                <a
+                  href={link.url}
+                  class="inline-flex items-center gap-2 rounded-full border border-sand-200 bg-paper px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-brand-300 hover:bg-brand-50"
+                >
+                  {link.label} <ExternalLink class="h-3.5 w-3.5 text-brand-600" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="border-t border-sand-200 bg-sand-50" id="share">
+    <div class="container-page py-14">
+      <QrPanel url={url} name={memorial.name} dates={dates} client:visible />
+    </div>
+  </section>
+
+  <section class="container-page py-12">
+    <div class="card-surface flex flex-wrap items-center justify-between gap-6 p-7">
+      <div class="max-w-xl">
+        <h2 class="font-serif text-xl font-semibold text-ink">Keep this page growing</h2>
+        <p class="mt-2 text-sm leading-relaxed text-ink-muted">
+          Anyone with the family edit link can add photographs, stories or a donation link. Every
+          change is committed to <code class="rounded bg-sand-100 px-1.5 py-0.5 text-xs">Git</code>,
+          so nothing is ever lost — and the page only changes once you publish it.
+        </p>
+      </div>
+      <a
+        href={`/manage#${memorial.slug}`}
+        class="inline-flex items-center gap-2 rounded-full bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-700"
+      >
+        <Pencil class="h-4 w-4" /> Open the editor
+      </a>
+    </div>
+  </section>
+
+  <Lightbox client:load />
+
+  {/* Click-to-load: no third-party request happens until a visitor asks for it. */}
+  <script>
+    for (const button of document.querySelectorAll<HTMLButtonElement>("[data-embed]")) {
+      button.addEventListener("click", () => {
+        const url = button.dataset.embed;
+        if (!url) return;
+        const frame = document.createElement("iframe");
+        frame.src = url;
+        frame.title = button.dataset.embedTitle ?? "Video";
+        frame.className = "absolute inset-0 h-full w-full";
+        frame.setAttribute("allow", "autoplay; fullscreen; picture-in-picture");
+        frame.setAttribute("allowfullscreen", "true");
+        frame.setAttribute("referrerpolicy", "strict-origin-when-cross-origin");
+        frame.setAttribute("loading", "lazy");
+        button.replaceWith(frame);
+      });
+    }
+  </script>
+
+  <script type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />
+</Layout>

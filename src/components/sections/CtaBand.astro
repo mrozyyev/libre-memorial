@@ -1,0 +1,31 @@
+---
+import { ArrowRight } from "@lucide/astro";
+import Button from "@/components/Button.astro";
+---
+
+<section class="border-y border-sand-200 bg-brand-700">
+  <div class="container-page flex flex-col items-start gap-8 py-16 lg:flex-row lg:items-center lg:justify-between">
+    <div class="max-w-2xl">
+      <h2 class="font-serif text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+        Start their memorial today
+      </h2>
+      <p class="mt-4 text-lg leading-relaxed text-brand-100">
+        It takes a couple of minutes, costs nothing, and you will have a link and a QR code you can
+        share before the day is over.
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-3">
+      <Button href="/create" size="lg" class="!bg-white !text-brand-700 hover:!bg-brand-50">
+        Create a memorial <ArrowRight class="h-4 w-4" />
+      </Button>
+      <Button
+        href="/explore"
+        variant="ghost"
+        size="lg"
+        class="!text-white hover:!bg-brand-600"
+      >
+        Browse examples
+      </Button>
+    </div>
+  </div>
+</section>

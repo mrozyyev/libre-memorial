@@ -1,0 +1,70 @@
+---
+import { SITE } from "@/lib/site";
+import { Heart, Coffee, Users, Wallet } from "@lucide/astro";
+import GithubMark from "@/components/icons/GithubMark.astro";
+import Button from "@/components/Button.astro";
+
+const costs = [
+  {
+    icon: Wallet,
+    title: "Hosting",
+    body: "The site is static HTML on Cloudflare's free plan. Serving a memorial costs effectively nothing.",
+  },
+  {
+    icon: Users,
+    title: "Storage",
+    body: "Photos and stories are files in a Git repository — a place that already exists, with backups and history included.",
+  },
+  {
+    icon: Heart,
+    title: "Our cut of donations",
+    body: "Zero. Donation links go straight to the charity or fundraiser you choose. We never touch the money.",
+  },
+];
+---
+
+<section class="container-page py-20" id="support">
+  <div class="card-surface overflow-hidden">
+    <div class="grid gap-10 p-8 sm:p-12 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-wide text-brand-600">What it costs</p>
+        <p class="mt-4 font-serif text-6xl font-semibold tracking-tight text-ink">
+          Nothing
+          <span class="align-middle text-2xl font-normal text-ink-muted">, and it stays that way</span>
+        </p>
+        <p class="mt-5 text-lg leading-relaxed text-ink-soft">
+          There is no premium tier, no expiry, no "restore your memories for €9.99". If you want to
+          help keep the servers running, you can — but a memorial never depends on it.
+        </p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          {
+            SITE.support.map((item, index) => (
+              <Button href={item.url} variant={index === 0 ? "primary" : "outline"}>
+                {index === 0 ? <Coffee class="h-4 w-4" /> : <GithubMark class="h-4 w-4" />}
+                {item.label}
+              </Button>
+            ))
+          }
+        </div>
+        <p class="mt-4 text-xs text-ink-muted">
+          Prefer to contribute code, translations or a bug report? The repository is open —
+          that helps just as much.
+        </p>
+      </div>
+
+      <ul class="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+        {
+          costs.map((cost) => (
+            <li class="rounded-2xl border border-sand-200 bg-sand-50 p-5">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-paper text-brand-600 shadow-sm">
+                <cost.icon class="h-5 w-5" />
+              </span>
+              <h3 class="mt-3 text-sm font-semibold text-ink">{cost.title}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-ink-muted">{cost.body}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>

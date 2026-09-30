@@ -1,64 +1,75 @@
 ---
+import { SITE } from "@/lib/site";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/fraunces";
+import "@/styles/globals.css";
+
 interface Props {
-	title: string;
+  title: string;
+  description?: string;
+  /** Absolute or root-relative OG image. */
+  image?: string;
+  type?: "website" | "article" | "profile";
+  noindex?: boolean;
+  /** Hides the global chrome (used by the full-bleed manage dashboard). */
+  bare?: boolean;
+  bodyClass?: string;
 }
 
-const { title } = Astro.props;
-import Footer from '@/components/Footer.astro';
-import Navbar from '@/components/navbar/Navbar.astro';
-import '@fontsource-variable/space-grotesk';
-import '@/styles/globals.css';
+const {
+  title,
+  description = SITE.description,
+  image = "/og-default.png",
+  type = "website",
+  noindex = false,
+  bare = false,
+  bodyClass = "",
+} = Astro.props;
 
+const canonical = new URL(Astro.url.pathname, SITE.url).href;
+const ogImage = new URL(image, SITE.url).href;
+const fullTitle = title.includes(SITE.name) ? title : `${title} · ${SITE.name}`;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="dark">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="description" content="LibreMemorial - Free & Open source memorial page" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title}</title>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="generator" content={Astro.generator} />
 
-		<!-- OpenGraph meta tags -->
-		<meta property="og:title" content={title} />
-		<meta property="og:description" content="LibreMemorial - Free & Open source memorial page" />
-		<meta property="og:image" content="/opengraph.png?v=1" />
-		<meta property="og:url" content="https://librememorial.org" />
-		<meta property="og:type" content="website" />
-	</head>
-	<Navbar  class:list={''}/>
-	<body>
-		<slot />
-	</body>
-<Footer />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+  </head>
+  <body class={bodyClass}>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-brand-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+    >
+      Skip to content
+    </a>
+
+    {!bare && <Header />}
+    <main id="main">
+      <slot />
+    </main>
+    {!bare && <Footer />}
+  </body>
 </html>
-<!-- <style is:global>
-	:root {
-		--accent: 136, 58, 234;
-		--accent-light: 224, 204, 250;
-		--accent-dark: 49, 10, 101;
-		--accent-gradient: linear-gradient(
-			45deg,
-			rgb(var(--accent)),
-			rgb(var(--accent-light)) 30%,
-			white 60%
-		);
-	}
-	html {
-		font-family: system-ui, sans-serif;
-		background-size: 224px;
-	}
-	code {
-		font-family:
-			Menlo,
-			Monaco,
-			Lucida Console,
-			Liberation Mono,
-			DejaVu Sans Mono,
-			Bitstream Vera Sans Mono,
-			Courier New,
-			monospace;
-	}
-</style> -->

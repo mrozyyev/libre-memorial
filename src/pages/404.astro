@@ -1,0 +1,32 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Button from "@/components/Button.astro";
+import { Compass, Clock, ArrowRight } from "@lucide/astro";
+---
+
+<Layout title="Page not found" description="That page could not be found." noindex>
+  <section class="container-page py-24">
+    <div class="mx-auto max-w-xl text-center">
+      <span class="mx-auto inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-50 text-brand-600">
+        <Compass class="h-7 w-7" />
+      </span>
+      <h1 class="mt-6 font-serif text-4xl font-semibold tracking-tight text-ink">
+        We could not find that page
+      </h1>
+      <p class="mt-5 text-lg leading-relaxed text-ink-soft">
+        The link may be mistyped, or the memorial may have been removed. If you have just created
+        one, give it a moment — a new page takes about a minute to publish while the site rebuilds.
+      </p>
+
+      <p class="mt-6 inline-flex items-center gap-2 rounded-full border border-sand-200 bg-sand-50 px-4 py-2 text-sm text-ink-muted">
+        <Clock class="h-4 w-4 text-brand-500" /> Newly created pages publish within a minute or two
+      </p>
+
+      <div class="mt-8 flex flex-wrap justify-center gap-3">
+        <Button href="/">Go home</Button>
+        <Button href="/explore" variant="outline">Browse memorials</Button>
+        <Button href="/create" variant="ghost">Create a memorial <ArrowRight class="h-4 w-4" /></Button>
+      </div>
+    </div>
+  </section>
+</Layout>

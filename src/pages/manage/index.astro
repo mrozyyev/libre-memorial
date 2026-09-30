@@ -1,0 +1,20 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import ManageApp from "@/components/manage/ManageApp.tsx";
+---
+
+<Layout
+  title="Edit a memorial"
+  description="Add photographs, stories and donation links to a memorial page."
+  noindex
+  bare
+  bodyClass="bg-sand-50"
+>
+  <div class="container-page py-10">
+    <div class="mb-8 flex items-center justify-between gap-4">
+      <a href="/" class="text-sm font-medium text-ink-muted hover:text-ink">← Back to LibreMemorial</a>
+      <span class="text-xs text-ink-muted">Private editor — this page is never indexed</span>
+    </div>
+    <ManageApp client:only="react" />
+  </div>
+</Layout>

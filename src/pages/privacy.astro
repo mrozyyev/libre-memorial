@@ -1,0 +1,106 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { SITE } from "@/lib/site";
+import { EyeOff, Cookie, Database, KeyRound, Trash, Server, Mail } from "@lucide/astro";
+
+const points = [
+  {
+    icon: EyeOff,
+    title: "No analytics, no tracking",
+    body: "There is no Google Analytics, no pixel, no fingerprinting and no advertising script. Nothing on this site profiles you or follows you to another website.",
+  },
+  {
+    icon: Cookie,
+    title: "No cookies",
+    body: "We set no cookies at all. Your edit link is kept in your browser's local storage so you do not have to paste it every time — you can clear it at any point from the editor.",
+  },
+  {
+    icon: Server,
+    title: "No third-party requests",
+    body: "Fonts and icons are bundled with the site rather than loaded from a CDN. A memorial page makes requests to this domain and nowhere else — with one exception a visitor controls: if you press play on a video, it loads from YouTube's privacy-enhanced domain or Vimeo, and only then. Nothing is requested from them before you click.",
+  },
+  {
+    icon: Database,
+    title: "What is stored, and where",
+    body: "Only what a family chooses to publish: a name, dates, a biography, photographs, stories, and any donation or charity links they add. It lives as plain files in a Git repository, which keeps a full history of every change.",
+  },
+  {
+    icon: KeyRound,
+    title: "Your edit key",
+    body: "Editing does not require an account. Each memorial has a secret edit key; only a one-way hash of it is ever stored. The link that carries the key uses a URL fragment, which browsers never send to the server, so the key stays out of logs.",
+  },
+  {
+    icon: Trash,
+    title: "Removing a page",
+    body: "Families can delete or unlist a memorial at any time, and the content is removed from the site. Because the storage is a Git repository, a determined person could still find older versions in its history — worth knowing before publishing anything.",
+  },
+];
+
+const contact = SITE.email;
+---
+
+<Layout
+  title="Privacy"
+  description="LibreMemorial collects no analytics, sets no cookies, and loads nothing from third parties. Here is exactly what is stored and where."
+>
+  <section class="border-b border-sand-200">
+    <div class="container-page py-16">
+      <p class="text-sm font-semibold uppercase tracking-wide text-brand-600">Privacy</p>
+      <h1 class="mt-3 max-w-3xl font-serif text-4xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl">
+        We collect nothing, because we do not want anything
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
+        Memorial pages should not be a data business. This site has no analytics, no advertising and
+        no third-party services embedded in its pages. This page describes exactly what exists,
+        without the hedging.
+      </p>
+    </div>
+  </section>
+
+  <section class="container-page py-16">
+    <div class="grid gap-6 md:grid-cols-2">
+      {
+        points.map((point) => (
+          <article class="card-surface p-6">
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+              <point.icon class="h-5 w-5" />
+            </span>
+            <h2 class="mt-4 text-base font-semibold text-ink">{point.title}</h2>
+            <p class="mt-2 text-sm leading-relaxed text-ink-muted">{point.body}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="card-surface mt-10 p-7">
+      <h2 class="font-serif text-xl font-semibold text-ink">The technical details, plainly</h2>
+      <ul class="mt-4 space-y-3 text-sm leading-relaxed text-ink-soft">
+        <li>
+          <strong class="font-semibold text-ink">Hosting.</strong> The site is served by Cloudflare,
+          like nearly every website, which means your IP address reaches their network so the request
+          can be answered and abuse blocked. Rate limiting happens in memory at the edge and is not
+          stored in a database.
+        </li>
+        <li>
+          <strong class="font-semibold text-ink">Public by design.</strong> A public memorial page is
+          public — anyone with the link can read it, and search engines may index it. Unlisted pages
+          are excluded from the sitemap and the robots file, but a link is still a link.
+        </li>
+        <li>
+          <strong class="font-semibold text-ink">No accounts.</strong> We never ask for an email
+          address, a phone number or a password in order to create or edit a memorial.
+        </li>
+        <li>
+          <strong class="font-semibold text-ink">Optional bot check.</strong> Some deployments enable
+          Cloudflare Turnstile on the creation form to stop spam. When enabled it runs only on that
+          form, and only if the operator chooses to turn it on.
+        </li>
+      </ul>
+    </div>
+
+    <p class="mt-8 inline-flex items-center gap-2 text-sm text-ink-muted">
+      <Mail class="h-4 w-4" />
+      Questions or a removal request: <a class="text-brand-700 underline underline-offset-2" href={`mailto:${contact}`}>{contact}</a>
+    </p>
+  </section>
+</Layout>

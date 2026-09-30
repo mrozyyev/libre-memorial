@@ -1,61 +1,102 @@
 ---
-import FeatureCard from "../FeatureCard.astro";
-import Steps from "../Steps.astro";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
-import Features from "./Features.astro";
+import { ArrowRight } from "@lucide/astro";
+import Button from "@/components/Button.astro";
 
-const stepsData = [
-    {
-        step: "Create a Profile",
-        description: "Sign up and fill in the details to set up a memorial page for your loved one."
-    },
-    {
-        step: "Personalize the Tribute",
-        description: "Add photos, a biography, and cherished memories to make the page truly unique."
-    },
-    {
-        step: "Download the Auto-Generated QR Code",
-        description: "Instantly receive a QR code that links directly to the memorial page, ready for use."
-    },
-    {
-        step: "Print it Anywhere",
-        description: "Choose your desired format and print the QR code for memorial cards, headstones, or any tribute setting."
-    },
-    {
-        step: "Share and Keep Their Legacy Alive",
-        description: "Place the printed QR code in a meaningful location and share the memorial page with friends and family to celebrate their life and legacy."
-    }
+const steps = [
+  {
+    title: "Start with their name",
+    body: "Type their name, the years they lived, and a line that says something true about them. That is enough for a page — you can add the rest later, together.",
+  },
+  {
+    title: "Add photos and memories",
+    body: "Drag in photographs straight from your phone and paste in the stories people tell. Every addition is its own file, so the page grows piece by piece.",
+  },
+  {
+    title: "Share the link and the QR code",
+    body: "Send the link to family, or download the QR card and have it printed for the service. Anyone who scans it lands on the memorial, no app required.",
+  },
+  {
+    title: "Keep the edit link safe",
+    body: "You get one secret link that lets you change anything later — no account, no password to forget. Save it with the family photos.",
+  },
+];
+
+const questions = [
+  {
+    q: "Do I need an account?",
+    a: "No. Creating a memorial gives you a secret edit link. Keep it somewhere safe and that link is your key to the page forever. There is nothing to sign up for and no password to reset.",
+  },
+  {
+    q: "What does it actually cost?",
+    a: "Nothing. The whole site is static files served from a free Cloudflare plan, and memorial content is stored as files in a Git repository. Running costs are close to zero, and the project is open source so it can outlive any one person's hosting bill.",
+  },
+  {
+    q: "Can someone else edit the page?",
+    a: "Yes — share the edit link with whoever should have access. Anyone with that link can add photos and stories. Treat it like a house key: give it only to people you trust.",
+  },
+  {
+    q: "Where are the photos and stories kept?",
+    a: "In a Git repository, as ordinary folders and files. Every edit is a versioned commit, which means nothing is ever silently lost and you can always get the original files back.",
+  },
+  {
+    q: "Can I add a donation link?",
+    a: "Yes. Add any GoFundMe, charity or fundraising link to the page. LibreMemorial never processes payments and never takes a percentage.",
+  },
+  {
+    q: "What happens if I lose the edit link?",
+    a: "The page stays online and public — you simply cannot edit it until someone restores access. Keep two copies, and consider sharing it with one other family member.",
+  },
 ];
 ---
 
-<section class="p-10 flex flex-col align-middle items-center justify-center space-y-2">
-    <div class="badge badge-primary badge-outline">how it works</div>
-    <h1 class="text-2xl md:text-5xl">Honoring Memories Together</h1>
-
-
-
-    <ul class="timeline timeline-snap-icon max-md:timeline-compact timeline-vertical">
-        {stepsData.map((item, index) => (
-            <li>
-                <div class="timeline-middle">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class={index % 2 === 0 ? "timeline-start mb-10 md:text-end" : "timeline-end mb-10"}>
-                    <time class="font-mono italic">{index + 1}.</time>
-                    <div class="text-lg font-black">{item.step}</div>
-                    {item.description}
-                </div>
-                <hr />
-            </li>
-        ))}
-    </ul>
-
-
-
-    <div class=" grid grid-cols-3 w-full overflow-x-auto">
-
+<section class="border-y border-sand-200 bg-sand-50">
+  <div class="container-page py-20">
+    <div class="max-w-2xl">
+      <p class="text-sm font-semibold uppercase tracking-wide text-brand-600">How it works</p>
+      <h2 class="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+        Four steps, and most of them are just remembering
+      </h2>
     </div>
-</setion>
+
+    <ol class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      {
+        steps.map((step, index) => (
+          <li class="relative rounded-2xl border border-sand-200 bg-paper p-6">
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-600 font-semibold text-white">
+              {index + 1}
+            </span>
+            <h3 class="mt-4 text-base font-semibold text-ink">{step.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-muted">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="mt-10">
+      <Button href="/create" size="lg">Start a memorial <ArrowRight class="h-4 w-4" /></Button>
+    </div>
+  </div>
+</section>
+
+<section class="container-page py-20" id="faq">
+  <div class="mx-auto max-w-3xl">
+    <h2 class="font-serif text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+      Questions families ask
+    </h2>
+    <div class="mt-8 divide-y divide-sand-200 border-y border-sand-200">
+      {
+        questions.map((item) => (
+          <details class="group py-5">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-left font-medium text-ink [&::-webkit-details-marker]:hidden">
+              {item.q}
+              <span class="text-brand-600 transition-transform group-open:rotate-45" aria-hidden="true">
+                +
+              </span>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-ink-muted">{item.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

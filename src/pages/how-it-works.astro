@@ -1,0 +1,209 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import HowItWorks from "@/components/sections/HowItWorks.astro";
+import CtaBand from "@/components/sections/CtaBand.astro";
+import { SITE } from "@/lib/site";
+import {
+  Camera,
+  Minimize2,
+  GitCommitHorizontal,
+  WandSparkles,
+  Globe,
+  QrCode,
+  ShieldCheck,
+  Server,
+  KeyRound,
+  Database,
+} from "@lucide/astro";
+import GithubMark from "@/components/icons/GithubMark.astro";
+
+const pipeline = [
+  {
+    icon: Camera,
+    title: "You add a photo",
+    body: "Pick a photo from your phone in the editor. It never leaves your device untouched.",
+  },
+  {
+    icon: Minimize2,
+    title: "Your browser shrinks it",
+    body: "Before uploading, the image is resized to a sensible maximum and re-encoded as WebP or JPEG — often less than a tenth of the original size.",
+  },
+  {
+    icon: GitCommitHorizontal,
+    title: "It becomes a commit",
+    body: "A Cloudflare Function writes the file into the memorial's folder in a Git repository and commits it. The old version stays in history.",
+  },
+  {
+    icon: WandSparkles,
+    title: "Astro rebuilds the page",
+    body: "The push triggers a build. Astro generates several sizes of every photo in modern formats and hashes each file name for caching.",
+  },
+  {
+    icon: Globe,
+    title: "The CDN serves it",
+    body: "The finished page is plain HTML and images on a global CDN. No database, no server to keep warm, no monthly bill to fear.",
+  },
+];
+
+const answers = [
+  {
+    icon: Database,
+    q: "Where does my content actually live?",
+    a: "As ordinary files in a Git repository: one JSON file per memorial, a folder of photos and one small file per story. Nothing is locked in a proprietary database, and you can clone the whole thing at any time.",
+  },
+  {
+    icon: KeyRound,
+    q: "How do people edit a page without accounts?",
+    a: "Creating a memorial generates a secret edit key. Only a hash of that key is stored in the repository, and the edit link carries the key in the URL fragment, which is never sent to a server. Give the link to family members you trust, and they can edit; nobody else can.",
+  },
+  {
+    icon: GithubMark,
+    q: "Could I use a CMS like Pages CMS instead?",
+    a: "You can, and the content layout is deliberately CMS-friendly. The catch is access control: Pages CMS edits through GitHub, so every family member would need a GitHub account with write access to the repository. The edit-key flow exists precisely so a grandmother can add a photo without anyone creating an account or being granted repository access.",
+  },
+  {
+    icon: ShieldCheck,
+    q: "Why does this stay free?",
+    a: "Static files plus a Git repository are the cheapest possible architecture. Hosting fits comfortably inside free tiers, and image optimisation keeps storage small. There is no per-visitor cost to pass on to families, so there is nothing to charge for.",
+  },
+  {
+    icon: Server,
+    q: "Can we host it ourselves?",
+    a: "Yes — that is the point. Fork the repository, connect it to your own Cloudflare account, set a GitHub token, and you have your own independent memorial site. Nothing about the project depends on one operator.",
+  },
+  {
+    icon: QrCode,
+    q: "Does the QR code expire?",
+    a: "No. The code simply encodes a normal web address, generated in your browser. As long as the site is online the code works — and you can print it today without paying anything to anyone.",
+  },
+];
+---
+
+<Layout
+  title="How it works"
+  description="How a LibreMemorial page is built and stored: photos optimised in the browser, content committed to Git, pages served as static files from a global CDN."
+>
+  <section class="border-b border-sand-200">
+    <div class="container-page py-16">
+      <p class="text-sm font-semibold uppercase tracking-wide text-brand-600">How it works</p>
+      <h1 class="mt-3 max-w-3xl font-serif text-4xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl">
+        A memorial that is cheap to run, hard to lose, and yours to keep
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
+        There is no clever trick here — just a deliberately boring design. Plain files, a Git
+        repository, and a static site. That combination is what makes it free, durable and easy to
+        move somewhere else if you ever want to.
+      </p>
+    </div>
+  </section>
+
+  <HowItWorks />
+
+  <section class="container-page py-20">
+    <p class="text-sm font-semibold uppercase tracking-wide text-brand-600">Under the hood</p>
+    <h2 class="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+      What happens when someone adds a photograph
+    </h2>
+    <p class="mt-4 max-w-2xl text-lg leading-relaxed text-ink-soft">
+      Five steps, none of them expensive, and the result is a page that loads quickly even on a
+      phone with a poor connection at the cemetery.
+    </p>
+
+    <ol class="mt-12 grid gap-4 lg:grid-cols-5">
+      {
+        pipeline.map((step, index) => (
+          <li class="relative rounded-2xl border border-sand-200 bg-paper p-5">
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+              <step.icon class="h-5 w-5" />
+            </span>
+            <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-ink-muted">
+              Step {index + 1}
+            </p>
+            <h3 class="mt-1 text-base font-semibold text-ink">{step.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-ink-muted">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="border-y border-sand-200 bg-sand-50">
+    <div class="container-page py-20">
+      <h2 class="font-serif text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+        Straight answers
+      </h2>
+      <div class="mt-10 grid gap-6 md:grid-cols-2">
+        {
+          answers.map((item) => (
+            <article class="card-surface p-6">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
+                <item.icon class="h-5 w-5" />
+              </span>
+              <h3 class="mt-4 text-base font-semibold text-ink">{item.q}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-ink-muted">{item.a}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-20">
+    <div class="grid gap-10 lg:grid-cols-2 lg:items-start">
+      <div>
+        <h2 class="font-serif text-3xl font-semibold tracking-tight text-ink">
+          Run your own copy
+        </h2>
+        <p class="mt-4 text-lg leading-relaxed text-ink-soft">
+          The whole project is {SITE.license} licensed. Fork it, connect it to your own Cloudflare
+          account, and you can host memorial pages for your community — or just keep a private copy
+          as a backup.
+        </p>
+        <ol class="mt-6 space-y-3 text-sm leading-relaxed text-ink-soft">
+          <li>
+            <strong class="font-semibold text-ink">1.</strong> Fork{" "}
+            <a class="text-brand-700 underline underline-offset-2" href={SITE.repo}>{SITE.repo}</a>
+          </li>
+          <li>
+            <strong class="font-semibold text-ink">2.</strong> Create a Cloudflare Pages project from
+            the fork and set the build command to <code class="rounded bg-sand-100 px-1.5 py-0.5 text-xs">npm run build</code>
+            .
+          </li>
+          <li>
+            <strong class="font-semibold text-ink">3.</strong> Add <code class="rounded bg-sand-100 px-1.5 py-0.5 text-xs">GITHUB_TOKEN</code>{" "}
+            (a fine-grained token with contents write access) and{" "}
+            <code class="rounded bg-sand-100 px-1.5 py-0.5 text-xs">GITHUB_REPO</code> as environment
+            variables.
+          </li>
+          <li>
+            <strong class="font-semibold text-ink">4.</strong> Optionally set{" "}
+            <code class="rounded bg-sand-100 px-1.5 py-0.5 text-xs">TURNSTILE_SECRET</code> to add a
+            free bot check to the creation form.
+          </li>
+        </ol>
+        <p class="mt-6 text-sm text-ink-muted">
+          Two environment variables and a fork. That is the entire deployment.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-sand-200 bg-ink p-6 font-mono text-xs leading-relaxed text-sand-100">
+        <p class="text-brand-300"># the repository is the database</p>
+        <p class="mt-3">src/content/memorials/</p>
+        <p>└── maria-popescu/</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;├── memorial.json</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;├── photos/</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;├── portrait.jpg</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── 1.jpg</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;└── stories/</p>
+        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── the-accordion-years.json</p>
+        <p class="mt-4 text-brand-300"># every edit is a commit</p>
+        <p class="mt-1">$ git log --oneline</p>
+        <p>a1f9c2e Add a memory to Maria Popescu</p>
+        <p>7d31b40 Add photo to Maria Popescu</p>
+        <p>2c88e01 Add memorial page for Maria Popescu</p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand />
+</Layout>
