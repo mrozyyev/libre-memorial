@@ -67,6 +67,26 @@ describe("GithubClient", () => {
     );
   });
 
+  /**
+   * The Workers runtime rejects a global `fetch` invoked with a non-global
+   * receiver ("Illegal invocation"). Node does not, so this test mimics the
+   * strictness: it fails if the client ever hands itself to fetch as `this`.
+   */
+  it("calls fetch with no receiver, as the Workers runtime requires", async () => {
+    const receivers: unknown[] = [];
+    const strictFetch = function (this: unknown) {
+      receivers.push(this);
+      return Promise.resolve(new Response(JSON.stringify({ content: "", sha: "s" }), { status: 200 }));
+    };
+    vi.stubGlobal("fetch", strictFetch);
+
+    // No injected fetcher: this is the path production takes.
+    await client().getFile("anything.json");
+
+    expect(receivers).toHaveLength(1);
+    expect(receivers[0]).toBeUndefined();
+  });
+
   it("maps upstream auth failures to a clear 503", async () => {
     vi.stubGlobal(
       "fetch",

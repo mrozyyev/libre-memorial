@@ -22,10 +22,20 @@ export interface GithubFile {
  * edit is versioned, auditable and restorable for free.
  */
 export class GithubClient {
-  constructor(
-    private readonly config: Config,
-    private readonly fetcher: typeof fetch = fetch,
-  ) {}
+  private readonly config: Config;
+  /**
+   * Wrapped rather than stored directly: calling a bare `fetch` held as an
+   * instance property passes the client as the receiver, and the Workers
+   * runtime rejects that with "Illegal invocation". Node tolerates it, so this
+   * only ever broke in production.
+   */
+  private readonly fetcher: typeof fetch;
+
+  constructor(config: Config, fetcher?: typeof fetch) {
+    this.config = config;
+    const implementation = fetcher ?? globalThis.fetch;
+    this.fetcher = (input, init) => implementation(input, init);
+  }
 
   private api(path: string, ref?: string): string {
     const suffix = ref ? `?ref=${encodeURIComponent(ref)}` : "";
