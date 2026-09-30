@@ -31,12 +31,15 @@ export class ConfigError extends Error {
 }
 
 export function readConfig(env: Env): Config {
-  const token = env.GITHUB_TOKEN?.trim();
-  const repo = env.GITHUB_REPO?.trim();
-  if (!token) throw new ConfigError("GITHUB_TOKEN is not configured on this deployment.");
-  if (!repo || !/^[^/\s]+\/[^/\s]+$/.test(repo)) {
-    throw new ConfigError('GITHUB_REPO must look like "owner/repo".');
+  const missing = missingSettings(env);
+  if (missing.includes("GITHUB_TOKEN")) {
+    throw new ConfigError("GITHUB_TOKEN is not configured on this deployment.");
   }
+  if (missing.includes("GITHUB_REPO")) {
+    throw new ConfigError('GITHUB_REPO is not configured. It must look like "owner/repo".');
+  }
+  const token = env.GITHUB_TOKEN!.trim();
+  const repo = env.GITHUB_REPO!.trim();
   return {
     token,
     repo,
@@ -48,4 +51,17 @@ export function readConfig(env: Env): Config {
       .map((origin) => origin.trim())
       .filter(Boolean),
   };
+}
+
+/**
+ * Names the variables a deployment is missing, so a self-hoster can see what is
+ * wrong instead of guessing. Environment changes on Cloudflare Pages only apply
+ * to new deployments, which is the usual reason a variable "is set" but absent.
+ */
+export function missingSettings(env: Env): string[] {
+  const missing: string[] = [];
+  if (!env.GITHUB_TOKEN?.trim()) missing.push("GITHUB_TOKEN");
+  const repo = env.GITHUB_REPO?.trim();
+  if (!repo || !/^[^/\s]+\/[^/\s]+$/.test(repo)) missing.push("GITHUB_REPO");
+  return missing;
 }

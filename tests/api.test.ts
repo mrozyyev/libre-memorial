@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { onRequestPost as createMemorial } from "../functions/api/create";
+import { onRequestGet as health } from "../functions/api/health";
 import { onRequestGet as getMemorial } from "../functions/api/memorials/[slug]/index";
 import { onRequestPost as updateMemorial } from "../functions/api/memorials/[slug]/update";
 import {
@@ -52,6 +53,40 @@ beforeEach(async () => {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+});
+
+describe("GET /api/health", () => {
+  const path = "https://example.com/api/health";
+
+  it("reports configured when every variable is present", async () => {
+    const response = await call(health, { path });
+    expect(response.body).toEqual({
+      ok: true,
+      service: "libre-memorial",
+      configured: true,
+      turnstile: false,
+    });
+  });
+
+  it("names each missing variable so a self-hoster does not have to guess", async () => {
+    const response = await call(health, { path, env: {} });
+    expect(response.body.configured).toBe(false);
+    expect(response.body.missing).toEqual(["GITHUB_TOKEN", "GITHUB_REPO"]);
+  });
+
+  it("flags a malformed GITHUB_REPO and a blank GITHUB_TOKEN", async () => {
+    const malformed = await call(health, {
+      path,
+      env: { GITHUB_TOKEN: "t", GITHUB_REPO: "not-a-repo" },
+    });
+    expect(malformed.body.missing).toEqual(["GITHUB_REPO"]);
+
+    const blank = await call(health, {
+      path,
+      env: { GITHUB_TOKEN: "   ", GITHUB_REPO: "owner/repo" },
+    });
+    expect(blank.body.missing).toEqual(["GITHUB_TOKEN"]);
+  });
 });
 
 describe("POST /api/create", () => {

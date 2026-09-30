@@ -1,11 +1,19 @@
 import type { PagesHandler } from "../lib/types";
 import { json } from "../lib/http";
+import { missingSettings } from "../lib/env";
 
-/** Lightweight readiness probe: also tells the client whether writes are set up. */
-export const onRequestGet: PagesHandler = async ({ env }) =>
-  json({
+/**
+ * Readiness probe. Reports whether writes are configured and, if not, exactly
+ * which variables are absent — the usual cause being that Cloudflare Pages only
+ * applies environment changes to new deployments.
+ */
+export const onRequestGet: PagesHandler = async ({ env }) => {
+  const missing = missingSettings(env);
+  return json({
     ok: true,
     service: "libre-memorial",
-    configured: Boolean(env.GITHUB_TOKEN && env.GITHUB_REPO),
+    configured: missing.length === 0,
+    ...(missing.length > 0 && { missing }),
     turnstile: Boolean(env.TURNSTILE_SECRET),
   });
+};
