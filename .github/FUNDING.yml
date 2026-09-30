@@ -1,0 +1,20 @@
+# This file enables the "Sponsor" button on this repository.
+# https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+# GitHub Sponsors — the only platform currently enabled.
+github: mrozyyev
+
+# Other funding platforms. Uncomment and fill in to show extra buttons.
+# patreon: # Replace with a single Patreon username
+# open_collective: # Replace with a single Open Collective username
+# ko_fi: # Replace with a single Ko-fi username
+# tidelift: # Replace with a single Tidelift platform-name/package-name
+# community_bridge: # Replace with a single Community Bridge project-name
+# liberapay: # Replace with a single Liberapay username
+# issuehunt: # Replace with a single IssueHunt username
+# lfx_crowdfunding: # Replace with a single LFX Crowdfunding project-name
+# polar: # Replace with a single Polar username
+# buy_me_a_coffee: # Replace with a single Buy Me a Coffee username
+# thanks_dev: # Replace with a single thanks.dev username
+# custom: # Up to four URLs, e.g. a GoFundMe or a charity page
+#   - https://example.com/donate
